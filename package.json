@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Transform your API responses into production ready tables in no time.",
   "main": "index.js",
+  "bin": {
+    "tablemint": "index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Abh1noob/TableMint/issues"
   },
-  "homepage": "https://github.com/Abh1noob/TableMint#readme"
+  "homepage": "https://github.com/Abh1noob/TableMint#readme",
+  "dependencies": {
+    "commander": "^14.0.1"
+  }
 }
