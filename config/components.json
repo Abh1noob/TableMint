@@ -1,0 +1,17 @@
+{
+  "baseUrl": "https://raw.githubusercontent.com/Abh1noob/TableMint/refs/heads/master/templates",
+  "components": {
+    "table": {
+      "description": "Create a new data table for an entity",
+      "targetDir": "app",
+      "files": ["columns.tsx", "data-table.tsx", "page.tsx"],
+      "dependencies": ["@tanstack/react-table"],
+      "instructions": [
+        "Update the type definition in columns.tsx with your data fields",
+        "Add column definitions for your fields",
+        "Implement the getData() function in page.tsx to fetch your data",
+        "Customize the table as needed"
+      ]
+    }
+  }
+}

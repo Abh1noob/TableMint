@@ -1,0 +1,6 @@
+templates/
+.vscode/
+*.md
+!README.md
+test-*.js
+CHANGELOG.md
