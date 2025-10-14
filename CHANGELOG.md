@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.1] - 2025-10-15
+
+### Added
+
+### Removed
+
+- Data export logic (planned for later). It caused build errors
+- Removed unnecessary component installation from `init` command 
+
+
 ## [1.3.0] - 2025-10-15
 
 ### Added
