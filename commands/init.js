@@ -1,6 +1,6 @@
 const runCommand = require("../utils/runCommand");
 
-const { generateGlobalComponents } = require('../utils/componentGenerator');
+const { generateGlobalComponents } = require("../utils/componentGenerator");
 
 async function initCommand() {
   console.log("Starting TableMint initialization...\n");
@@ -14,13 +14,10 @@ async function initCommand() {
     console.log("Installing required shadcn/ui components...\n");
 
     const components = [
-      "label",
-      "avatar",
       "badge",
       "button",
       "checkbox",
       "command",
-      "dialog",
       "dropdown-menu",
       "input",
       "pagination",
@@ -39,7 +36,9 @@ async function initCommand() {
     await generateGlobalComponents();
 
     console.log("\nAll components installed successfully!\n");
-    console.log("You can now create tables using: tablemint create table <entityname>");
+    console.log(
+      "You can now create tables using: tablemint create table <entityname>"
+    );
   } catch (error) {
     console.error("Error during initialization:", error.message);
     process.exit(1);
