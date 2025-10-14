@@ -13,16 +13,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 
-// This type defines the shape of your data.
-// You can use a Zod schema here if you want.
 export type {{ENTITY_NAME_PASCAL}} = {
   id: string
-  // Add your fields here
+  // Add your fields here based on your API response
   // Example:
   // name: string
   // email: string
-  // status: "pending" | "processing" | "success" | "failed"
+  // status: "active" | "inactive"
+  // createdAt: string
 }
 
 export const columns: ColumnDef<{{ENTITY_NAME_PASCAL}}>[] = [
@@ -50,31 +50,27 @@ export const columns: ColumnDef<{{ENTITY_NAME_PASCAL}}>[] = [
   },
   {
     accessorKey: "id",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          ID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="ID" />
+    ),
   },
-  // Add more columns here based on your {{ENTITY_NAME_PASCAL}} type
+  // Add your custom columns here
   // Example:
   // {
   //   accessorKey: "name",
-  //   header: ({ column }) => {
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Name" />
+  //   ),
+  // },
+  // {
+  //   accessorKey: "status",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Status" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const status = row.getValue("status") as string
   //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Name
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
+  //       <div className="capitalize">{status}</div>
   //     )
   //   },
   // },
@@ -101,6 +97,7 @@ export const columns: ColumnDef<{{ENTITY_NAME_PASCAL}}>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>View details</DropdownMenuItem>
             <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

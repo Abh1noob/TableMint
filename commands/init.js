@@ -1,7 +1,9 @@
 const runCommand = require("../utils/runCommand");
 
+const { generateGlobalComponents } = require('../utils/componentGenerator');
+
 async function initCommand() {
-  console.log("Starting TableForge initialization...\n");
+  console.log("Starting TableMint initialization...\n");
   console.log("Running shadcn/ui initialization...");
   console.log("Please follow the prompts to configure shadcn/ui:\n");
 
@@ -33,7 +35,11 @@ async function initCommand() {
       await runCommand("npx", ["shadcn@latest", "add", component, "-y"]);
     }
 
+    console.log("\nInstalling global table components...\n");
+    await generateGlobalComponents();
+
     console.log("\nAll components installed successfully!\n");
+    console.log("You can now create tables using: tablemint create table <entityname>");
   } catch (error) {
     console.error("Error during initialization:", error.message);
     process.exit(1);

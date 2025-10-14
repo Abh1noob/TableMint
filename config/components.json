@@ -1,16 +1,18 @@
 {
-  "baseUrl": "https://raw.githubusercontent.com/Abh1noob/TableMint/refs/heads/master/templates",
+  "baseUrl": "local",
   "components": {
     "table": {
       "description": "Create a new data table for an entity",
       "targetDir": "app",
-      "files": ["columns.tsx", "data-table.tsx", "page.tsx"],
+      "files": ["columns.tsx", "page.tsx", "table-config.ts"],
       "dependencies": ["@tanstack/react-table"],
       "instructions": [
+        "Configure filters in table-config.ts based on your API response",
         "Update the type definition in columns.tsx with your data fields",
-        "Add column definitions for your fields",
+        "Add column definitions for your entity in columns.tsx",
         "Implement the getData() function in page.tsx to fetch your data",
-        "Customize the table as needed"
+        "Customize search and filter behavior in table-config.ts",
+        "Note: Ensure your column displays the field that corresponds to your defined filter for proper functionality"
       ]
     }
   }

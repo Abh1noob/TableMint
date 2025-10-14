@@ -89,6 +89,56 @@ function generateReplacements(entityName) {
     ENTITY_NAME_KEBAB: toKebabCase(entityName),
   };
 }
+
+function checkGlobalComponents() {
+  try {
+    const { baseDir } = findTargetDirectory('components');
+    const globalComponentPath = path.join(baseDir, 'table', 'data-table.tsx');
+    return directoryExists(path.dirname(globalComponentPath)) && 
+           require('fs').existsSync(globalComponentPath);
+  } catch (error) {
+    return false;
+  }
+}
+
+async function generateGlobalComponents() {
+  const globalFiles = [
+    'data-table.tsx',
+    'data-table-toolbar.tsx', 
+    'data-table-column-header.tsx',
+    'data-table-faceted-filter.tsx',
+    'data-table-pagination.tsx',
+    'data-table-view-options.tsx'
+  ];
+
+  // Use the same detection logic as entity generation
+  const { baseDir } = findTargetDirectory('components');
+  const targetDir = path.join(baseDir, 'table');
+  
+  console.log('Installing global table components...');
+  
+  for (const fileName of globalFiles) {
+    console.log(`Installing ${fileName}...`);
+    
+    try {
+      let templateContent;
+      
+      if (config.baseUrl === 'local') {
+        const templatePath = path.join(__dirname, '../templates/table/global', fileName);
+        templateContent = await fetchTemplate(templatePath, true);
+      } else {
+        const templateUrl = `${config.baseUrl}/table/global/${fileName}`;
+        templateContent = await fetchTemplate(templateUrl, false);
+      }
+      
+      writeFile(path.join(targetDir, fileName), templateContent);
+    } catch (error) {
+      throw new Error(`Failed to install global component "${fileName}": ${error.message}`);
+    }
+  }
+  
+  console.log('Global table components installed successfully!');
+}
 async function generateComponent(componentType, entityName) {
   if (!entityName || entityName.trim() === "") {
     throw new Error("Entity name is required!");
@@ -97,6 +147,13 @@ async function generateComponent(componentType, entityName) {
   const componentConfig = config.components[componentType];
   if (!componentConfig) {
     throw new Error(`Component type "${componentType}" not found!`);
+  }
+
+  // Check if global components exist
+  if (!checkGlobalComponents()) {
+    throw new Error(
+      'Global table components not found. Please run "tablemint init" first to install global components.'
+    );
   }
 
   const { baseDir, baseDirRelative } = findTargetDirectory(
@@ -124,7 +181,10 @@ async function generateComponent(componentType, entityName) {
   );
   console.log(`Creating directory: ${baseDirRelative}/${entityNameKebab}\n`);
 
-  for (const fileName of componentConfig.files) {
+  
+  const entityFiles = ['columns.tsx', 'page.tsx', 'table-config.ts'];
+  
+  for (const fileName of entityFiles) {
     console.log(`Fetching ${fileName}...`);
 
     try {
@@ -133,14 +193,12 @@ async function generateComponent(componentType, entityName) {
       if (config.baseUrl === "local") {
         const templatePath = path.join(
           __dirname,
-          "../templates",
-          componentType,
+          "../templates/table/entity",
           fileName
         );
         templateContent = await fetchTemplate(templatePath, true);
       } else {
-        const templateFileName = fileName.replace(/\//g, "-");
-        const templateUrl = `${config.baseUrl}/${componentType}/${templateFileName}`;
+        const templateUrl = `${config.baseUrl}/table/entity/${fileName}`;
         templateContent = await fetchTemplate(templateUrl, false);
       }
 
@@ -156,6 +214,7 @@ async function generateComponent(componentType, entityName) {
       );
     }
   }
+  
   if (results.dependencies.length > 0) {
     const installResult = await installPackages(results.dependencies);
     results.installResult = installResult;
@@ -166,6 +225,8 @@ async function generateComponent(componentType, entityName) {
 
 module.exports = {
   generateComponent,
+  generateGlobalComponents,
+  checkGlobalComponents,
   getAvailableComponents: () => Object.keys(config.components),
   getComponentConfig: (type) => config.components[type],
 };

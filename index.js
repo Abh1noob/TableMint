@@ -8,7 +8,7 @@ const program = new Command();
 program
   .name('tablemint')
   .description('Transform your API responses into production ready tables in no time')
-  .version('1.2.0', '-v, --version', 'Output the current version')
+  .version('1.3.0', '-v, --version', 'Output the current version')
   .helpOption('-h, --help', 'Display help for command');
 
 program
