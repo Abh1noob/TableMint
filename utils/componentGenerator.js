@@ -90,54 +90,129 @@ function generateReplacements(entityName) {
   };
 }
 
-function checkGlobalComponents() {
+function getGlobalComponentsStatus() {
   try {
-    const { baseDir } = findTargetDirectory('components');
-    const globalComponentPath = path.join(baseDir, 'table', 'data-table.tsx');
-    return directoryExists(path.dirname(globalComponentPath)) && 
-           require('fs').existsSync(globalComponentPath);
+    const { baseDir } = findTargetDirectory("components");
+    const targetDir = path.join(baseDir, "table");
+
+    const requiredFiles = [
+      "data-table.tsx",
+      "data-table-toolbar.tsx",
+      "data-table-column-header.tsx",
+      "data-table-faceted-filter.tsx",
+      "data-table-pagination.tsx",
+      "data-table-view-options.tsx",
+    ];
+
+    const existingFiles = [];
+    const missingFiles = [];
+
+    if (!directoryExists(targetDir)) {
+      return { existingFiles, missingFiles: requiredFiles, allExist: false };
+    }
+
+    const fs = require("fs");
+    for (const fileName of requiredFiles) {
+      const filePath = path.join(targetDir, fileName);
+      if (fs.existsSync(filePath)) {
+        existingFiles.push(fileName);
+      } else {
+        missingFiles.push(fileName);
+      }
+    }
+
+    return {
+      existingFiles,
+      missingFiles,
+      allExist: missingFiles.length === 0,
+    };
   } catch (error) {
-    return false;
+    return {
+      existingFiles: [],
+      missingFiles: [
+        "data-table.tsx",
+        "data-table-toolbar.tsx",
+        "data-table-column-header.tsx",
+        "data-table-faceted-filter.tsx",
+        "data-table-pagination.tsx",
+        "data-table-view-options.tsx",
+      ],
+      allExist: false,
+    };
   }
+}
+
+function checkGlobalComponents() {
+  return getGlobalComponentsStatus().allExist;
 }
 
 async function generateGlobalComponents() {
   const globalFiles = [
-    'data-table.tsx',
-    'data-table-toolbar.tsx', 
-    'data-table-column-header.tsx',
-    'data-table-faceted-filter.tsx',
-    'data-table-pagination.tsx',
-    'data-table-view-options.tsx'
+    "data-table.tsx",
+    "data-table-toolbar.tsx",
+    "data-table-column-header.tsx",
+    "data-table-faceted-filter.tsx",
+    "data-table-pagination.tsx",
+    "data-table-view-options.tsx",
   ];
 
-  // Use the same detection logic as entity generation
-  const { baseDir } = findTargetDirectory('components');
-  const targetDir = path.join(baseDir, 'table');
-  
-  console.log('Installing global table components...');
-  
+  const { baseDir } = findTargetDirectory("components");
+  const targetDir = path.join(baseDir, "table");
+  const fs = require("fs");
+  const existingFiles = [];
+  const missingFiles = [];
+
   for (const fileName of globalFiles) {
+    const filePath = path.join(targetDir, fileName);
+    if (fs.existsSync(filePath)) {
+      existingFiles.push(fileName);
+    } else {
+      missingFiles.push(fileName);
+    }
+  }
+
+  if (existingFiles.length > 0) {
+    console.log(
+      `Found existing global components: ${existingFiles.join(", ")}`
+    );
+  }
+
+  if (missingFiles.length === 0) {
+    console.log("All global table components already exist!");
+    return;
+  }
+
+  console.log(
+    `Installing ${missingFiles.length} missing global table components...`
+  );
+
+  for (const fileName of missingFiles) {
     console.log(`Installing ${fileName}...`);
-    
+
     try {
       let templateContent;
-      
-      if (config.baseUrl === 'local') {
-        const templatePath = path.join(__dirname, '../templates/table/global', fileName);
+
+      if (config.baseUrl === "local") {
+        const templatePath = path.join(
+          __dirname,
+          "../templates/table/global",
+          fileName
+        );
         templateContent = await fetchTemplate(templatePath, true);
       } else {
         const templateUrl = `${config.baseUrl}/table/global/${fileName}`;
         templateContent = await fetchTemplate(templateUrl, false);
       }
-      
+
       writeFile(path.join(targetDir, fileName), templateContent);
     } catch (error) {
-      throw new Error(`Failed to install global component "${fileName}": ${error.message}`);
+      throw new Error(
+        `Failed to install global component "${fileName}": ${error.message}`
+      );
     }
   }
-  
-  console.log('Global table components installed successfully!');
+
+  console.log("Global table components installed successfully!");
 }
 async function generateComponent(componentType, entityName) {
   if (!entityName || entityName.trim() === "") {
@@ -181,9 +256,8 @@ async function generateComponent(componentType, entityName) {
   );
   console.log(`Creating directory: ${baseDirRelative}/${entityNameKebab}\n`);
 
-  
-  const entityFiles = ['columns.tsx', 'page.tsx', 'table-config.ts'];
-  
+  const entityFiles = ["columns.tsx", "page.tsx", "table-config.ts"];
+
   for (const fileName of entityFiles) {
     console.log(`Fetching ${fileName}...`);
 
@@ -214,7 +288,7 @@ async function generateComponent(componentType, entityName) {
       );
     }
   }
-  
+
   if (results.dependencies.length > 0) {
     const installResult = await installPackages(results.dependencies);
     results.installResult = installResult;
@@ -227,6 +301,7 @@ module.exports = {
   generateComponent,
   generateGlobalComponents,
   checkGlobalComponents,
+  getGlobalComponentsStatus,
   getAvailableComponents: () => Object.keys(config.components),
   getComponentConfig: (type) => config.components[type],
 };

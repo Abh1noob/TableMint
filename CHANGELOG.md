@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.2] - 2025-10-15
+
+### Added
+
+- Intelligent component detection system for optimized initialization
+- Partial installation support for both shadcn/ui and global table components
+
+### Changed
+
+- Optimized `init` command to skip existing components and only install missing ones
+- Improved `checkGlobalComponents()` to validate all required files instead of just one
+- Enhanced `generateGlobalComponents()` with better existing file detection
+- Updated initialization process to provide detailed status reports
+
+### Fixed
+- Baseurl for fetching component was left as "local" accidentally. Replaced it again with raw github content url
+
 ## [1.3.1] - 2025-10-15
 
 ### Added

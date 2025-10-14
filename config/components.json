@@ -1,5 +1,5 @@
 {
-  "baseUrl": "local",
+  "baseUrl": "https://raw.githubusercontent.com/Abh1noob/TableMint/refs/heads/master/templates",
   "components": {
     "table": {
       "description": "Create a new data table for an entity",
