@@ -49,10 +49,4 @@ export const tableConfig = {
   //     { label: "Export Selected", action: "export" }
   //   ]
   // },
-
-  export: {
-    enabled: true,
-    formats: ["csv", "excel"],
-    filename: "{{ENTITY_NAME_KEBAB}}-export",
-  },
 };

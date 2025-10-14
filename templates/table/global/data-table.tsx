@@ -53,11 +53,6 @@ interface TableConfig {
     actionLabel?: string;
     actionHref?: string;
   };
-  export?: {
-    enabled?: boolean;
-    formats?: string[];
-    filename?: string;
-  };
 }
 
 interface DataTableProps<TData, TValue> {
@@ -126,7 +121,6 @@ export function DataTable<TData, TValue>({
         filters={filters} 
         searchColumn={searchColumn}
         searchPlaceholder={searchPlaceholder}
-        config={config}
       />
       <div className="rounded-md border">
         <Table>
